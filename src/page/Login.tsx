@@ -83,7 +83,9 @@ export default function LoginPage() {
             transition={{ duration: 0.4 }}
           >
             <h1 className="text-4xl font-bold mb-4">Heureux de votre retour</h1>
-            <p className="text-white/80">Connectez-vous pour accéder à votre compte</p>
+            <p className="text-white/80">
+              Connectez-vous pour accéder à votre compte
+            </p>
           </motion.div>
         </div>
 
@@ -176,11 +178,11 @@ export default function LoginPage() {
           </motion.div>
 
           {/* Mobile logo */}
-          <div className="absolute top-6 left-6 lg:hidden flex items-center gap-2">
+          <div className="absolute top-4 right-6 lg:hidden flex items-center gap-2">
             <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center">
               <ShoppingBag className="text-white w-4 h-4" />
             </div>
-            <span className="font-bold">V&V</span>
+            <span className="font-bold">OSEL</span>
           </div>
         </div>
       </motion.div>
