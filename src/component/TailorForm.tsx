@@ -85,7 +85,7 @@ const TailorForm: React.FC<Property> = ({ handleNext }) => {
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="max-w-md w-full text-center space-y-6 onClick={handleNext}bg-white p-12 rounded-3xl shadow-xl shadow-osel-gold/10 border border-osel-gold/20"
+          className="max-w-md w-full text-center space-y-6 bg-white p-12 rounded-3xl shadow-xl shadow-osel-gold/10 border border-osel-gold/20"
         >
           <div className="flex justify-center">
             <div className="w-20 h-20 bg-osel-gold/10 rounded-full flex items-center justify-center">
@@ -100,7 +100,7 @@ const TailorForm: React.FC<Property> = ({ handleNext }) => {
             examineront vos informations et vous contacteront prochainement.
           </p>
           <button
-            
+            onClick={handleNext}
             className="text-osel-gold font-medium hover:underline flex items-center justify-center gap-2 mx-auto"
           >
             Suivant
@@ -260,5 +260,4 @@ const TailorForm: React.FC<Property> = ({ handleNext }) => {
     </div>
   );
 };
-
 export default TailorForm;
