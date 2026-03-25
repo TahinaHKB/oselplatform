@@ -11,6 +11,7 @@ import {
   UserCheck,
   Bell,
   Shirt,
+  Activity,
 } from "lucide-react";
 import { auth, db } from "../firebase";
 import { doc, getDoc } from "firebase/firestore";
@@ -21,6 +22,7 @@ export default function NavBar() {
   const [username, setUsername] = useState("Utilisateur");
   const [profilePic, setProfilePic] = useState<string | null>(null);
   const navigate = useNavigate();
+  const [seller, setSeller] = useState(false);
 
   const toggleMenu = () => setIsOpen(!isOpen);
 
@@ -34,6 +36,7 @@ export default function NavBar() {
         const data = userDoc.data();
         setUsername(data.username || "Utilisateur");
         setProfilePic(data.profilePic);
+        if (data.type_account.includes("vendeur")) setSeller(true);
       }
     };
     fetchUser();
@@ -92,16 +95,29 @@ export default function NavBar() {
               Notifications
             </div>
           </NavLink>
+          {seller && (
+            <NavLink
+              to="/stock"
+              className={({ isActive }) =>
+                isActive ? activeClass : inactiveClass
+              }
+            >
+              <div className="flex items-center gap-1">
+                <Shirt size={18} />
+                Stock
+              </div>
+            </NavLink>
+          )}
 
           <NavLink
-            to="/stock"
+            to="/scan"
             className={({ isActive }) =>
               isActive ? activeClass : inactiveClass
             }
           >
             <div className="flex items-center gap-1">
-              <Shirt size={18} />
-              Stock
+              <Activity size={18} />
+              Scan
             </div>
           </NavLink>
 
@@ -240,16 +256,29 @@ export default function NavBar() {
                 Notifications
               </div>
             </NavLink>
+            {seller && (
+              <NavLink
+                to="/stock"
+                className={({ isActive }) =>
+                  isActive ? activeClass : inactiveClass
+                }
+              >
+                <div className="flex items-center gap-1">
+                  <Shirt size={18} />
+                  Stock
+                </div>
+              </NavLink>
+            )}
 
             <NavLink
-              to="/stock"
+              to="/scan"
               className={({ isActive }) =>
                 isActive ? activeClass : inactiveClass
               }
             >
               <div className="flex items-center gap-1">
-                <Shirt size={18} />
-                Stock
+                <Activity size={18} />
+                Scan
               </div>
             </NavLink>
 

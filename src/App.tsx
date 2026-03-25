@@ -14,6 +14,8 @@ import NotificationsPage from "./page/Notification";
 import { useAuth } from "./component/useAuth";
 import Loading from "./component/Loading";
 import Stock from "./page/Stock";
+import HolisticDemo from "./page/Scan";
+import WelcomNewUser from "./page/WelcomNewUser";
 
 function App() {
   const { User, loading } = useAuth();
@@ -49,6 +51,14 @@ function App() {
           path="/stock"
           element={User ? <Stock /> : <Navigate to="/login" replace />}
         />
+        <Route
+          path="/scan"
+          element={User ? <HolisticDemo /> : <Navigate to="/login" replace />}
+        />
+        <Route
+          path="/welcom"
+          element={User ? <WelcomNewUser /> : <Navigate to="/login" replace />}
+        />
 
         {/* 🧩 Routes publiques */}
         <Route
@@ -57,11 +67,11 @@ function App() {
         />
         <Route
           path="/login"
-          element={User ? <Navigate to="/home" replace /> : <Login />}
+          element={<Login />}
         />
         <Route
           path="/register"
-          element={User ? <Navigate to="/home" replace /> : <Register />}
+          element={<Register />}
         />
 
         {/* ⚠️ Redirection par défaut (route inconnue) */}

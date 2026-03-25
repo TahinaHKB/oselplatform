@@ -58,3 +58,18 @@ module.exports = {
   },
   plugins: [require("tailwindcss-animate")],
 }
+
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
+  theme: {
+    extend: {
+      colors: {
+        "brand-primary": "#FF6B6B",     // rouge stylé
+        "brand-secondary": "#4ECDC4",   // turquoise
+        "brand-accent": "#FFE66D",      // jaune
+      },
+    },
+  },
+  plugins: [],
+};

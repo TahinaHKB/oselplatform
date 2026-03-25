@@ -4,20 +4,34 @@ import { doc, getDoc, updateDoc } from "firebase/firestore";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import NavBar from "../component/NavBar";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import Loading from "../component/Loading";
-import useFCMTokenUpdater from "@/component/FCMtoken";
+import useFCMTokenUpdater from "../component/FCMtoken";
+import {
+  Camera,
+  Mail,
+  User,
+  Calendar,
+  TrendingUp,
+  DollarSign,
+  Package,
+  Layers,
+  ChevronRight,
+  ShoppingBag,
+} from "lucide-react";
 
 const CLOUD_NAME = "dyjgjijfa";
 const UPLOAD_PRESET = "konnektData";
 
-const Profile: React.FC = () => {
+const Home: React.FC = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [birthdate, setBirthdate] = useState("");
   const [profilePic, setProfilePic] = useState("");
   const [loading, setLoading] = useState(true);
+  const [type_account, setType_account] = useState("");
   const navigate = useNavigate();
+  const [viewStat, setViewStat] = useState("client");
 
   // Valeurs statiques dashboard
   const salesCount = 12;
@@ -25,11 +39,23 @@ const Profile: React.FC = () => {
   const stockCount = 45;
   const categoryCount = 8;
 
+  const orderCount = 8;
+  const totalSpent = 120000;
+  const itemsBought = 15;
+  const favoritesCount = 6;
+
+  const changeStat = () => {
+    if (viewStat == "vendeur") setViewStat("client");
+    else {
+      if (type_account.includes("vendeur") && viewStat == "client")
+        setViewStat("vendeur");
+    }
+  };
+
   useEffect(() => {
     const fetchUserData = async () => {
       const user = auth.currentUser;
       if (!user) {
-        navigate("/");
         return;
       }
 
@@ -38,22 +64,30 @@ const Profile: React.FC = () => {
 
       if (docSnap.exists()) {
         const data = docSnap.data();
+        if (data.firstConnection) navigate("/welcom");
         setUsername(data.username);
         setEmail(data.email);
         setBirthdate(data.birthdate || "");
         setProfilePic(data.profilePic || "");
+        setType_account(data.type_account);
       }
 
       setLoading(false);
-      useFCMTokenUpdater();
+      // useFCMTokenUpdater(); // Hook call should be inside component if it's a hook
     };
 
     fetchUserData();
   }, [navigate]);
 
+  // Hook call
+  useFCMTokenUpdater();
+
   const handleProfileUpdate = async () => {
     const user = auth.currentUser;
-    if (!user) return;
+    if (!user) {
+      alert("Demo mode: Profil mis à jour !");
+      return;
+    }
 
     await updateDoc(doc(db, "users", user.uid), {
       username,
@@ -87,118 +121,300 @@ const Profile: React.FC = () => {
   if (loading) return <Loading />;
 
   return (
-    <>
-      <NavBar />
-      <div className="min-h-screen bg-gradient-to-b from-purple-50 to-blue-50 pt-[70px] px-4 md:px-10 pb-10 flex flex-col items-center gap-10">
-        {/* Profil utilisateur */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-          className="bg-white p-8 rounded-3xl shadow-xl border border-purple-200 flex flex-col max-w-2xl w-full"
-        >
-          <h2 className="text-3xl font-extrabold mb-6 text-center text-purple-700">
-            Mon Profil
-          </h2>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-indigo-50 to-purple-50 text-slate-900 font-sans selection:bg-indigo-100 selection:text-indigo-900 overflow-hidden">
+      {/* BACKGROUND GLOW (ne casse rien) */}
+      <div className="fixed inset-0 -z-10 overflow-hidden">
+        <div className="absolute top-[-10%] left-[-10%] w-[400px] h-[400px] bg-indigo-300/30 blur-[120px] rounded-full" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[400px] h-[400px] bg-purple-300/30 blur-[120px] rounded-full" />
+      </div>
 
-          <div className="flex flex-col items-center mb-6">
-            <div className="relative w-28 h-28 mb-4">
-              <img
-                src={profilePic}
-                alt="Profil"
-                className="w-full h-full rounded-full object-cover shadow-lg border-4 border-purple-200"
-              />
-              <label className="absolute bottom-0 right-0 bg-purple-500 p-1 rounded-full cursor-pointer hover:bg-purple-600 transition">
-                <input
-                  type="file"
-                  onChange={handleProfilePicChange}
-                  className="hidden"
-                />
-                <svg
-                  className="w-5 h-5 text-white"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path d="M4 13V7a1 1 0 011-1h10a1 1 0 011 1v6h2v-6a3 3 0 00-3-3H5a3 3 0 00-3 3v6h2zM2 15a2 2 0 012-2h12a2 2 0 012 2v2H2v-2z" />
-                </svg>
-              </label>
-            </div>
+      <NavBar />
+
+      <main className="pt-24 pb-16 px-4 md:px-8 max-w-7xl mx-auto space-y-12">
+        {/* Header */}
+        <header className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+          <div className="space-y-1">
+            <h1 className="text-4xl font-bold tracking-tight bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+              Tableau de bord
+            </h1>
+            <p className="text-slate-500 font-medium">
+              Gérez votre profil et suivez vos performances.
+            </p>
           </div>
 
-          <div className="space-y-4">
-            <input
-              type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              disabled
-              className="w-full px-4 py-2 border rounded-xl focus:ring-2 focus:ring-purple-400 focus:outline-none"
-              placeholder="Nom d'utilisateur"
-            />
-            <input
-              type="email"
-              value={email}
-              disabled
-              className="w-full px-4 py-2 border rounded-xl bg-gray-100 cursor-not-allowed"
-            />
-            <input
-              type="date"
-              value={birthdate === "none" ? "" : birthdate}
-              onChange={(e) => setBirthdate(e.target.value)}
-              className="w-full px-4 py-2 border rounded-xl focus:ring-2 focus:ring-purple-400 focus:outline-none"
-            />
-
-            <button
-              onClick={handleProfileUpdate}
-              className="w-full bg-purple-500 text-white py-2 rounded-xl hover:bg-purple-600 transition font-semibold"
-            >
-              Mettre à jour le profil
+          <div className="flex items-center gap-2 text-sm font-semibold text-indigo-600 bg-indigo-50 px-4 py-2 rounded-full border border-indigo-100 shadow-sm">
+            <button onClick={changeStat}>
+              {viewStat == "client"
+                ? "STATISTIQUE ACHETEUR"
+                : "STATISTIQUE VENDEUR"}
             </button>
           </div>
-        </motion.div>
+        </header>
 
-        {/* Dashboard statique */}
-        <div className="w-full max-w-7xl grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {[
-            {
-              title: "Nombre de ventes",
-              value: salesCount,
-              color: "bg-purple-100",
-              textColor: "text-purple-700",
-            },
-            {
-              title: "Argent gagné",
-              value: `${totalMoney} Ar`,
-              color: "bg-green-100",
-              textColor: "text-green-700",
-            },
-            {
-              title: "Produits en stock",
-              value: stockCount,
-              color: "bg-blue-100",
-              textColor: "text-blue-700",
-            },
-            {
-              title: "Catégories",
-              value: categoryCount,
-              color: "bg-yellow-100",
-              textColor: "text-yellow-700",
-            },
-          ].map((card) => (
+        <div className="grid lg:grid-cols-12 gap-8">
+          {/* PROFILE */}
+          <div className="lg:col-span-5 space-y-6">
             <motion.div
-              key={card.title}
-              whileHover={{ scale: 1.05 }}
-              className={`${card.color} p-6 rounded-2xl shadow flex flex-col items-center`}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-xl border border-slate-200 overflow-hidden"
             >
-              <h3 className={`text-sm mb-2 ${card.textColor}`}>{card.title}</h3>
-              <p className={`text-3xl font-bold ${card.textColor}`}>
-                {card.value}
-              </p>
+              <div className="h-32 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 relative">
+                <div className="absolute -bottom-12 left-8">
+                  <div className="relative group">
+                    <img
+                      src={
+                        profilePic || "https://picsum.photos/seed/user/200/200"
+                      }
+                      className="w-24 h-24 rounded-2xl object-cover ring-4 ring-white shadow-xl bg-white"
+                    />
+                    <label className="absolute -bottom-2 -right-2 bg-white p-2 rounded-xl shadow-lg border cursor-pointer hover:scale-110 transition">
+                      <input
+                        type="file"
+                        onChange={handleProfilePicChange}
+                        className="hidden"
+                      />
+                      <Camera className="w-4 h-4 text-indigo-600" />
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <div className="pt-16 pb-8 px-8 space-y-8">
+                <div>
+                  <h2 className="text-2xl font-bold">
+                    {username || "Utilisateur"}
+                  </h2>
+                  <p className="text-slate-500">{email}</p>
+                </div>
+
+                <div className="space-y-5">
+                  <div>
+                    <label className="text-xs font-bold text-slate-400 ml-1">
+                      Nom d'utilisateur
+                    </label>
+                    <div className="relative">
+                      <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-indigo-400" />
+                      <input
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                        className="w-full pl-11 pr-4 py-3 bg-slate-50 border rounded-2xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition outline-none"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-bold text-slate-400 ml-1">
+                      Email
+                    </label>
+                    <div className="relative">
+                      <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-indigo-400" />
+                      <input
+                        value={email}
+                        disabled
+                        className="w-full pl-11 pr-4 py-3 bg-slate-100 border rounded-2xl text-slate-500"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-bold text-slate-400 ml-1">
+                      Date de naissance
+                    </label>
+                    <div className="relative">
+                      <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-indigo-400" />
+                      <input
+                        type="date"
+                        value={birthdate === "none" ? "" : birthdate}
+                        onChange={(e) => setBirthdate(e.target.value)}
+                        className="w-full pl-11 pr-4 py-3 bg-slate-50 border rounded-2xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <button
+                  onClick={handleProfileUpdate}
+                  className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-4 rounded-2xl font-bold shadow-lg hover:opacity-90 active:scale-[0.98] transition"
+                >
+                  Enregistrer
+                </button>
+              </div>
             </motion.div>
-          ))}
+          </div>
+
+          {/* STATS */}
+          <div className="lg:col-span-7 space-y-6">
+            {viewStat == "vendeur" && (
+              <>
+                <div className="grid sm:grid-cols-2 gap-6">
+                  {[
+                    {
+                      title: "Ventes totales",
+                      value: salesCount,
+                      icon: TrendingUp,
+                      color: "indigo",
+                      description: "Ventes réalisées ce mois",
+                    },
+                    {
+                      title: "Chiffre d'affaires",
+                      value: `${totalMoney.toLocaleString()} Ar`,
+                      icon: DollarSign,
+                      color: "emerald",
+                      description: "Revenus bruts cumulés",
+                    },
+                    {
+                      title: "Inventaire",
+                      value: stockCount,
+                      icon: Package,
+                      color: "blue",
+                      description: "Produits actifs en stock",
+                    },
+                    {
+                      title: "Catégories",
+                      value: categoryCount,
+                      icon: Layers,
+                      color: "purple",
+                      description: "Segments de produits",
+                    },
+                  ].map((card, idx) => (
+                    <motion.div
+                      key={card.title}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: idx * 0.1 }}
+                      whileHover={{ y: -6 }}
+                      className="bg-white/80 backdrop-blur-xl p-6 rounded-3xl shadow-lg border border-slate-200 flex flex-col justify-between group cursor-pointer"
+                    >
+                      <div className="flex justify-between mb-4">
+                        <div
+                          className={`p-3 rounded-2xl bg-${card.color}-50 text-${card.color}-600`}
+                        >
+                          <card.icon className="w-6 h-6" />
+                        </div>
+                        <ChevronRight className="w-5 h-5 text-slate-300 group-hover:text-slate-500" />
+                      </div>
+
+                      <div>
+                        <h3 className="text-slate-500 text-sm font-bold mb-1">
+                          {card.title}
+                        </h3>
+                        <p className="text-3xl font-black">{card.value}</p>
+                        <p className="text-slate-400 text-xs">
+                          {card.description}
+                        </p>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+
+                {/* CTA */}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-3xl p-8 text-white relative overflow-hidden"
+                >
+                  <h3 className="text-xl font-bold">
+                    Prêt à booster vos ventes ?
+                  </h3>
+                  <p className="text-white/80 max-w-md">
+                    Analysez vos performances et découvrez de nouvelles
+                    opportunités.
+                  </p>
+                  <button className="mt-4 bg-white text-indigo-600 px-6 py-3 rounded-xl font-bold hover:bg-gray-100 transition">
+                    Voir les rapports
+                  </button>
+                </motion.div>
+              </>
+            )}
+            {/* STATS ACHAT */}
+            {viewStat == "client" && (
+              <>
+                <div className="grid sm:grid-cols-2 gap-6">
+                  {[
+                    {
+                      title: "Commandes",
+                      value: orderCount,
+                      icon: Package,
+                      color: "indigo",
+                      description: "Achats effectués",
+                    },
+                    {
+                      title: "Dépenses totales",
+                      value: `${totalSpent.toLocaleString()} Ar`,
+                      icon: DollarSign,
+                      color: "emerald",
+                      description: "Montant total dépensé",
+                    },
+                    {
+                      title: "Articles achetés",
+                      value: itemsBought,
+                      icon: ShoppingBag,
+                      color: "blue",
+                      description: "Produits achetés",
+                    },
+                    {
+                      title: "Favoris",
+                      value: favoritesCount,
+                      icon: TrendingUp,
+                      color: "purple",
+                      description: "Articles enregistrés",
+                    },
+                  ].map((card, idx) => (
+                    <motion.div
+                      key={card.title}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: idx * 0.1 }}
+                      whileHover={{ y: -6 }}
+                      className="bg-white/80 backdrop-blur-xl p-6 rounded-3xl shadow-lg border border-slate-200 flex flex-col justify-between group cursor-pointer"
+                    >
+                      <div className="flex justify-between mb-4">
+                        <div
+                          className={`p-3 rounded-2xl bg-${card.color}-50 text-${card.color}-600`}
+                        >
+                          <card.icon className="w-6 h-6" />
+                        </div>
+                        <ChevronRight className="w-5 h-5 text-slate-300 group-hover:text-slate-500" />
+                      </div>
+
+                      <div>
+                        <h3 className="text-slate-500 text-sm font-bold mb-1">
+                          {card.title}
+                        </h3>
+                        <p className="text-3xl font-black">{card.value}</p>
+                        <p className="text-slate-400 text-xs">
+                          {card.description}
+                        </p>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+
+                {/* CTA */}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="bg-gradient-to-r from-emerald-500 to-indigo-500 rounded-3xl p-8 text-white relative overflow-hidden"
+                >
+                  <h3 className="text-xl font-bold">
+                    Envie de découvrir plus ?
+                  </h3>
+                  <p className="text-white/80 max-w-md">
+                    Parcourez de nouvelles collections et trouvez votre prochain
+                    coup de cœur.
+                  </p>
+                  <button className="mt-4 bg-white text-indigo-600 px-6 py-3 rounded-xl font-bold hover:bg-gray-100 transition">
+                    Explorer la boutique
+                  </button>
+                </motion.div>
+              </>
+            )}
+          </div>
         </div>
-      </div>
-    </>
+      </main>
+    </div>
   );
 };
 
-export default Profile;
+export default Home;
