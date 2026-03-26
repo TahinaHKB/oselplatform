@@ -11,7 +11,6 @@ import {
   CheckCircle2,
   XCircle,
 } from "lucide-react";
-import { defaultCategories } from "@/data/categoryDefault";
 
 import { db, auth } from "../firebase";
 import {
@@ -23,10 +22,12 @@ import {
   deleteDoc,
   doc,
   updateDoc,
+  getDoc,
 } from "firebase/firestore";
 import { type Clothing, type Category } from "@/data/datyType";
 import LoadingComment from "@/component/LoadingComment";
 import { motion, AnimatePresence } from "motion/react";
+import { useNavigate } from "react-router-dom";
 
 const CLOUD_NAME = "dyjgjijfa";
 const UPLOAD_PRESET = "konnektData";
@@ -49,19 +50,31 @@ const Stock = () => {
 
   const addCategory = async () => {
     if (!newCategory || !user) return;
+
+    // Vérifie si la catégorie existe déjà
+    const exists = categories.some(
+      (cat) => cat.name.toLowerCase() === newCategory.trim().toLowerCase(),
+    );
+
+    if (exists) {
+      alert("Cette catégorie existe déjà !");
+      return;
+    }
+
+    // Ajouter dans Firestore
     await addDoc(collection(db, "categories"), {
-      name: newCategory,
+      name: newCategory.trim(),
       userId: user.uid,
     });
+
     setNewCategory("");
-    loadCategories();
+    loadCategories(); // recharge la liste depuis Firestore
   };
 
   const loadCategories = async () => {
     if (!user) return;
     const q = query(
       collection(db, "categories"),
-      where("userId", "==", user.uid),
     );
     const querySnapshot = await getDocs(q);
     const list: Category[] = [];
@@ -150,8 +163,24 @@ const Stock = () => {
     });
     loadClothes();
   };
+  const navigate = useNavigate();
+  const verifyUser = async () => {
+    const user = auth.currentUser;
+    if (!user) {
+      return;
+    }
+
+    const docRef = doc(db, "users", user.uid);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      const data = docSnap.data();
+      if (!data.type_account.includes("vendeur")) navigate("/");
+    }
+  };
 
   useEffect(() => {
+    verifyUser();
     loadClothes();
     loadCategories();
   }, []);
@@ -179,7 +208,6 @@ const Stock = () => {
             <span className="text-slate-400 text-sm">articles au total</span>
           </div>
         </header>
-        bg-white
         <div className="grid lg:grid-cols-3 gap-8 items-start">
           {/* Left Column: Forms */}
           <div className="lg:col-span-1 space-y-8">
@@ -269,22 +297,11 @@ const Stock = () => {
                     onChange={(e) => setCategory(e.target.value)}
                   >
                     <option value="">Sélectionner une catégorie</option>
-                    <optgroup label="Défaut">
-                      {defaultCategories.map((cat) => (
-                        <option key={cat} value={cat}>
-                          {cat}
-                        </option>
-                      ))}
-                    </optgroup>
-                    {categories.length > 0 && (
-                      <optgroup label="Personnalisées">
-                        {categories.map((cat) => (
-                          <option key={cat.id} value={cat.name}>
-                            {cat.name}
-                          </option>
-                        ))}
-                      </optgroup>
-                    )}
+                    {categories.map((cat) => (
+                      <option key={cat.id} value={cat.name}>
+                        {cat.name}
+                      </option>
+                    ))}
                   </select>
                 </div>
 

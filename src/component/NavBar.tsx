@@ -23,6 +23,7 @@ export default function NavBar() {
   const [profilePic, setProfilePic] = useState<string | null>(null);
   const navigate = useNavigate();
   const [seller, setSeller] = useState(false);
+  const [admin, setAdmin] = useState(false);
 
   const toggleMenu = () => setIsOpen(!isOpen);
 
@@ -37,6 +38,7 @@ export default function NavBar() {
         setUsername(data.username || "Utilisateur");
         setProfilePic(data.profilePic);
         if (data.type_account.includes("vendeur")) setSeller(true);
+        if (data.type_account.includes("admin")) setAdmin(true);
       }
     };
     fetchUser();
@@ -170,6 +172,20 @@ export default function NavBar() {
                     <UserCheck size={18} className="mr-2" />
                     Mon profil
                   </NavLink>
+                  {admin && (
+                    <NavLink
+                      to="/admin"
+                      className={({ isActive }) =>
+                        `flex items-center w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 transition ${
+                          isActive ? activeClass : ""
+                        }`
+                      }
+                      onClick={() => setDropdownOpen(false)}
+                    >
+                      <UserCheck size={18} className="mr-2" />
+                      Admin
+                    </NavLink>
+                  )}
                   <button
                     onClick={handleLogout}
                     className="flex items-center w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 transition"
@@ -293,6 +309,19 @@ export default function NavBar() {
             >
               <User size={18} /> Voir mon profil
             </NavLink>
+            {admin && (
+              <NavLink
+                to="/admin"
+                className={({ isActive }) =>
+                  `block flex items-center gap-2 ${
+                    isActive ? activeClass : inactiveClass
+                  }`
+                }
+                onClick={toggleMenu}
+              >
+                <User size={18} /> Admin
+              </NavLink>
+            )}
 
             {/* <NavLink
               to="/settings"

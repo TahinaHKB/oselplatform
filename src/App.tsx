@@ -16,6 +16,7 @@ import Loading from "./component/Loading";
 import Stock from "./page/Stock";
 import HolisticDemo from "./page/Scan";
 import WelcomNewUser from "./page/WelcomNewUser";
+import AdminPage from "./page/AdminPage";
 
 function App() {
   const { User, loading } = useAuth();
@@ -59,20 +60,18 @@ function App() {
           path="/welcom"
           element={User ? <WelcomNewUser /> : <Navigate to="/login" replace />}
         />
+        <Route
+          path="/admin"
+          element={User ? <AdminPage /> : <Navigate to="/login" replace />}
+        />
 
         {/* 🧩 Routes publiques */}
         <Route
           path="/"
           element={User ? <Navigate to="/home" replace /> : <Login />}
         />
-        <Route
-          path="/login"
-          element={<Login />}
-        />
-        <Route
-          path="/register"
-          element={<Register />}
-        />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
 
         {/* ⚠️ Redirection par défaut (route inconnue) */}
         <Route

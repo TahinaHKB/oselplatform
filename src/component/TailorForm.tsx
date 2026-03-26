@@ -69,6 +69,7 @@ const TailorForm: React.FC<Property> = ({ handleNext }) => {
         desire: formData.desire,
         person: user?.uid,
         createdAt: serverTimestamp(),
+        etat: "pending",
       });
 
       console.log("Envoyé ✅");

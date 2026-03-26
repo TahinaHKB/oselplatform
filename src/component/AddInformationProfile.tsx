@@ -24,7 +24,7 @@ const AddInformationProfile: React.FC<Property> = ({ handleNext }) => {
     await updateDoc(doc(db, "users", user.uid), {
       gender: formData.gender,
       style_cloth: formData.style,
-      birthday: formData.birthday,
+      birthdate: formData.birthday,
     });
     handleNext();
   };
