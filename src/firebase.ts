@@ -7,13 +7,13 @@ import { getStorage } from "firebase/storage";
 
 // 🔑 Ta configuration Firebase (depuis la console Firebase)
 const firebaseConfig = {
-  apiKey: "AIzaSyCFEZ3y0-IndIXvWiDCtNnE72BMxovBhhc",
-  authDomain: "oselplatform.firebaseapp.com",
-  projectId: "oselplatform",
-  storageBucket: "oselplatform.firebasestorage.app",
-  messagingSenderId: "125834444785",
-  appId: "1:125834444785:web:16419d191c54198f874e50",
-  measurementId: "G-V5VLX07JG4",
+  apiKey: "AIzaSyDD8cIbN4xaZkKn08FAvRhrv1Lbkdo2JQw",
+  authDomain: "platformosel.firebaseapp.com",
+  projectId: "platformosel",
+  storageBucket: "platformosel.firebasestorage.app",
+  messagingSenderId: "267687643639",
+  appId: "1:267687643639:web:7feb782d38d9c3322e46f2",
+  measurementId: "G-DLYG43HN8M",
 };
 
 // Initialiser Firebase
