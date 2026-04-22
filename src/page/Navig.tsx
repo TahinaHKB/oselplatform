@@ -11,22 +11,8 @@ import {
   Search,
   ShoppingBag,
 } from "lucide-react";
-import type { Category } from "@/data/datyType";
-
-type Clothing = {
-  id: string;
-  name: string;
-  price: number;
-  category: string;
-  userId: string;
-  imageUrl: string;
-  color?: string;
-};
-
-type User = {
-  id: string;
-  username: string;
-};
+import type { Category, Clothing, User } from "@/data/datyType";
+import ConfirmOrder from "@/component/ConfirmOrder";
 
 const Navig: React.FC = () => {
   const [products, setProducts] = useState<Clothing[]>([]);
@@ -35,28 +21,27 @@ const Navig: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
   const [newCategory, setNewCategory] = useState<Category[]>([]);
-
+  const [selectedProduct, setSelectedProduct] = useState<Clothing | null>(null);
+  const [showModal, setShowModal] = useState(false);
 
   const loadCategories = async () => {
-      const q = query(
-        collection(db, "categories"),
-      );
-      const querySnapshot = await getDocs(q);
-      const list: Category[] = [];
-      querySnapshot.forEach((docu) => {
-        list.push({
-          id: docu.id,
-          ...(docu.data() as Category),
-        });
+    const q = query(collection(db, "categories"));
+    const querySnapshot = await getDocs(q);
+    const list: Category[] = [];
+    querySnapshot.forEach((docu) => {
+      list.push({
+        id: docu.id,
+        ...(docu.data() as Category),
       });
-      setNewCategory(list);
-    };
-    
+    });
+    setNewCategory(list);
+  };
+
   // Charger tous les produits
   const fetchProducts = async () => {
     try {
       const productsRef = collection(db, "stock");
-      const q = query(productsRef, where("disponible", "==", true)); // 🔹 filtre côté serveur
+      const q = query(productsRef, where("disponible", "==", true));
       const productsSnap = await getDocs(q);
 
       const productsList: Clothing[] = productsSnap.docs.map((doc) => {
@@ -214,9 +199,15 @@ const Navig: React.FC = () => {
 
                   {/* Quick Buy Button (Desktop) */}
                   <div className="absolute bottom-4 left-4 right-4 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
-                    <button className="w-full bg-white text-black py-3 rounded-xl font-bold text-sm flex items-center justify-center gap-2 shadow-xl hover:bg-black hover:text-white transition-colors">
+                    <button
+                      onClick={() => {
+                        setSelectedProduct(product);
+                        setShowModal(true);
+                      }}
+                      className="w-full bg-white text-black py-3 rounded-xl font-bold text-sm flex items-center justify-center gap-2 shadow-xl hover:bg-black hover:text-white transition-colors"
+                    >
                       <ShoppingCart className="w-4 h-4" />
-                      Acheter maintenant
+                      Commander maintenant
                     </button>
                   </div>
                 </div>
@@ -253,6 +244,14 @@ const Navig: React.FC = () => {
               Essayez une autre catégorie ou revenez plus tard.
             </p>
           </div>
+        )}
+
+        {showModal && selectedProduct && (
+          <ConfirmOrder
+            selectedProduct={selectedProduct}
+            setShowModal={setShowModal}
+            getSellerName={getSellerName}
+          />
         )}
       </main>
 

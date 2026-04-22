@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword} from "firebase/auth";
 import { auth, db } from "../firebase";
 import { doc, setDoc } from "firebase/firestore";
 import { Link, useNavigate } from "react-router-dom";
@@ -48,7 +48,9 @@ const Register = () => {
     try {
       setLoading(true);
       if (!email || password.length < 6)
-        throw new Error("Email ou mot de passe invalide (6 caractères minimum)");
+        throw new Error(
+          "Email ou mot de passe invalide (6 caractères minimum)",
+        );
 
       const userCredential = await createUserWithEmailAndPassword(
         auth,
@@ -68,8 +70,9 @@ const Register = () => {
         type_account: "client",
       });
 
-      setError("Utilisateur créé :" + user.uid);
-      navigate("/login");
+      //await sendEmailVerification(userCredential.user);
+      navigate("/verify-email");
+
     } catch (err: any) {
       setError("Erreur inscription :" + err.message);
     }
@@ -206,7 +209,7 @@ const Register = () => {
             <motion.div className="mt-6 text-center">
               <p className="text-gray-400">
                 Déjà un compte ?
-                <Link to="/" className="ml-2 text-indigo-400 hover:underline">
+                <Link to="/login" className="ml-2 text-indigo-400 hover:underline">
                   Se connecter
                 </Link>
               </p>

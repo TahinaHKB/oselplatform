@@ -3,7 +3,7 @@ import { doc, setDoc } from "firebase/firestore";
 import { auth, db } from "../firebase";
 
 const vapidKey =
-  "BCnhGpIlv_iCA2rUyyYH4ZX2Zo2VRt0ZZ8nv6AFlFg75hE3vARPPEgTJKiUOdidoKzQb0zMM3nDeU6Ayp_v0ofk"; // depuis Firebase console
+  "BFrAnJeX1GZw4CJ8a2aIdeh5wRJp0wCzcZP01W6VsyybbV6FLdQtmc0EMe8YyGwkAPUSjW7TkI2wZ88yZXCNJfw"; // depuis Firebase console
 
 export default async function updateFCMToken() {
   const user = auth.currentUser;

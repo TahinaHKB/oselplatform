@@ -8,18 +8,18 @@ import Register from "./page/Register";
 import Login from "./page/Login";
 import Home from "./page/Home";
 import Naviguer from "./page/Navig";
-import UsersList from "./page/Message";
-import Chat from "./page/Chat";
-import NotificationsPage from "./page/Notification";
 import { useAuth } from "./component/useAuth";
 import Loading from "./component/Loading";
 import Stock from "./page/Stock";
 import HolisticDemo from "./page/Scan";
 import WelcomNewUser from "./page/WelcomNewUser";
 import AdminPage from "./page/AdminPage";
-
+import VerifyEmail from "./page/VerifyEmail";
+import ListOrder from "./page/ListOrder";
+import OrderDetail from "./page/OrderDetail";
 function App() {
-  const { User, loading } = useAuth();
+  const { User, emailVerified, loading } = useAuth();
+
   if (loading) return <Loading />;
 
   return (
@@ -28,41 +28,95 @@ function App() {
         {/* 🔒 Routes protégées */}
         <Route
           path="/home"
-          element={User ? <Home /> : <Navigate to="/login" replace />}
-        />
-        <Route
-          path="/messages"
-          element={User ? <UsersList /> : <Navigate to="/login" replace />}
-        />
-        <Route
-          path="/chat/:uid"
-          element={User ? <Chat /> : <Navigate to="/login" replace />}
-        />
-        <Route
-          path="/notifications"
           element={
-            User ? <NotificationsPage /> : <Navigate to="/login" replace />
+            User && emailVerified ? <Home /> : <Navigate to="/login" replace />
+          }
+        />
+        <Route
+          path="/order"
+          element={
+            User && emailVerified ? (
+              <ListOrder />
+            ) : (
+              <Navigate to="/login" replace />
+            )
+          }
+        />
+        <Route
+          path="/orders/:id"
+          element={
+            User && emailVerified ? (
+              <OrderDetail />
+            ) : (
+              <Navigate to="/login" replace />
+            )
           }
         />
         <Route
           path="/navig"
-          element={User ? <Naviguer /> : <Navigate to="/login" replace />}
+          element={
+            User && emailVerified ? (
+              <Naviguer />
+            ) : (
+              <Navigate to="/login" replace />
+            )
+          }
         />
         <Route
           path="/stock"
-          element={User ? <Stock /> : <Navigate to="/login" replace />}
+          element={
+            User && emailVerified ? <Stock /> : <Navigate to="/login" replace />
+          }
         />
         <Route
           path="/scan"
-          element={User ? <HolisticDemo /> : <Navigate to="/login" replace />}
+          element={
+            User && emailVerified ? (
+              <HolisticDemo />
+            ) : (
+              <Navigate to="/login" replace />
+            )
+          }
         />
         <Route
           path="/welcom"
-          element={User ? <WelcomNewUser /> : <Navigate to="/login" replace />}
+          element={
+            User && emailVerified ? (
+              <WelcomNewUser />
+            ) : (
+              <Navigate to="/login" replace />
+            )
+          }
         />
         <Route
-          path="/admin"
-          element={User ? <AdminPage /> : <Navigate to="/login" replace />}
+          path="/admin/request"
+          element={
+            User && emailVerified ? (
+              <AdminPage menu="request" />
+            ) : (
+              <Navigate to="/login" replace />
+            )
+          }
+        />
+        <Route
+          path="/admin/user"
+          element={
+            User && emailVerified ? (
+              <AdminPage menu="user" />
+            ) : (
+              <Navigate to="/login" replace />
+            )
+          }
+        />
+        <Route
+          path="/admin/setting"
+          element={
+            User && emailVerified ? (
+              <AdminPage menu="setting" />
+            ) : (
+              <Navigate to="/login" replace />
+            )
+          }
         />
 
         {/* 🧩 Routes publiques */}
@@ -72,6 +126,7 @@ function App() {
         />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/verify-email" element={<VerifyEmail />} />
 
         {/* ⚠️ Redirection par défaut (route inconnue) */}
         <Route

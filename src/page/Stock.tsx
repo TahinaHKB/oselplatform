@@ -24,10 +24,19 @@ import {
   updateDoc,
   getDoc,
 } from "firebase/firestore";
-import { type Clothing, type Category } from "@/data/datyType";
+import {type Category } from "@/data/datyType";
 import LoadingComment from "@/component/LoadingComment";
 import { motion, AnimatePresence } from "motion/react";
 import { useNavigate } from "react-router-dom";
+
+export type Clothing = {
+  id?: string;
+  name: string;
+  price: number;
+  disponible: boolean;
+  category: string;
+  imageUrl: string;
+};
 
 const CLOUD_NAME = "dyjgjijfa";
 const UPLOAD_PRESET = "konnektData";

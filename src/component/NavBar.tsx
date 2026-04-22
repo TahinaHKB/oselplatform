@@ -9,7 +9,6 @@ import {
   Compass,
   LogOut,
   UserCheck,
-  Bell,
   Shirt,
   Activity,
 } from "lucide-react";
@@ -71,32 +70,21 @@ export default function NavBar() {
             }
           >
             <div className="flex items-center gap-1">
-              <Compass size={18} /> Naviguer
+              <Compass size={18} /> Boutique
             </div>
           </NavLink>
 
           <NavLink
-            to="/messages"
+            to="/order"
             className={({ isActive }) =>
               isActive ? activeClass : inactiveClass
             }
           >
             <div className="flex items-center gap-1">
-              <MessageSquare size={18} /> Messages
+              <MessageSquare size={18} /> Commandes
             </div>
           </NavLink>
 
-          <NavLink
-            to="/notifications"
-            className={({ isActive }) =>
-              isActive ? activeClass : inactiveClass
-            }
-          >
-            <div className="flex items-center gap-1">
-              <Bell size={18} />
-              Notifications
-            </div>
-          </NavLink>
           {seller && (
             <NavLink
               to="/stock"
@@ -174,7 +162,7 @@ export default function NavBar() {
                   </NavLink>
                   {admin && (
                     <NavLink
-                      to="/admin"
+                      to="/admin/request"
                       className={({ isActive }) =>
                         `flex items-center w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 transition ${
                           isActive ? activeClass : ""
@@ -246,11 +234,11 @@ export default function NavBar() {
               }
               onClick={toggleMenu}
             >
-              <Compass size={18} /> Naviguer
+              <Compass size={18} /> Boutique
             </NavLink>
 
             <NavLink
-              to="/messages"
+              to="/order"
               className={({ isActive }) =>
                 `block flex items-center gap-2 ${
                   isActive ? activeClass : inactiveClass
@@ -258,20 +246,9 @@ export default function NavBar() {
               }
               onClick={toggleMenu}
             >
-              <MessageSquare size={18} /> Messages
+              <MessageSquare size={18} /> Commandes
             </NavLink>
 
-            <NavLink
-              to="/notifications"
-              className={({ isActive }) =>
-                isActive ? activeClass : inactiveClass
-              }
-            >
-              <div className="flex items-center gap-1">
-                <Bell size={18} />
-                Notifications
-              </div>
-            </NavLink>
             {seller && (
               <NavLink
                 to="/stock"
@@ -311,7 +288,7 @@ export default function NavBar() {
             </NavLink>
             {admin && (
               <NavLink
-                to="/admin"
+                to="/admin/request"
                 className={({ isActive }) =>
                   `block flex items-center gap-2 ${
                     isActive ? activeClass : inactiveClass

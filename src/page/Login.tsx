@@ -43,13 +43,28 @@ export default function LoginPage() {
 
   const handleLogin = async (e: FormEvent) => {
     e.preventDefault();
+
     try {
       setLoading(true);
-      await signInWithEmailAndPassword(auth, email, password);
-      setLoading(false);
-      navigate("/home");
+
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password,
+      );
+
+      const user = userCredential.user;
+
+      await user.reload();
+
+      if (!user.emailVerified) {
+        navigate("/verify-email");
+      } else {
+        navigate("/home");
+      }
     } catch (err: any) {
       setError(err.message);
+    } finally {
       setLoading(false);
     }
   };
