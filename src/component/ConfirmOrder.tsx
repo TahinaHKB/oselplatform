@@ -53,9 +53,6 @@ const ConfirmOrder: React.FC<RequestProps> = ({
           createdAt: serverTimestamp(),
         });
       }
-
-      console.log("Commande créée avec ID :", orderRef.id);
-
       // 🔥 UX
       setShowModal(false);
       setMessage("");

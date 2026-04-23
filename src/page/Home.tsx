@@ -90,8 +90,6 @@ const Home: React.FC = () => {
     }
 
     await updateDoc(doc(db, "users", user.uid), {
-      username,
-      birthdate,
       profilePic,
     });
     alert("Profil mis à jour !");
@@ -189,46 +187,50 @@ const Home: React.FC = () => {
                 </div>
 
                 <div className="space-y-5">
+                  {/* Username */}
                   <div>
                     <label className="text-xs font-bold text-slate-400 ml-1">
                       Nom d'utilisateur
                     </label>
+
                     <div className="relative">
                       <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-indigo-400" />
-                      <input
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                        className="w-full pl-11 pr-4 py-3 bg-slate-50 border rounded-2xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition outline-none"
-                      />
+
+                      <div className="w-full pl-11 pr-4 py-3 bg-slate-50 border rounded-2xl text-slate-700">
+                        {username || "Non défini"}
+                      </div>
                     </div>
                   </div>
 
+                  {/* Email */}
                   <div>
                     <label className="text-xs font-bold text-slate-400 ml-1">
                       Email
                     </label>
+
                     <div className="relative">
                       <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-indigo-400" />
-                      <input
-                        value={email}
-                        disabled
-                        className="w-full pl-11 pr-4 py-3 bg-slate-100 border rounded-2xl text-slate-500"
-                      />
+
+                      <div className="w-full pl-11 pr-4 py-3 bg-slate-100 border rounded-2xl text-slate-500">
+                        {email || "Non défini"}
+                      </div>
                     </div>
                   </div>
 
+                  {/* Birthdate */}
                   <div>
                     <label className="text-xs font-bold text-slate-400 ml-1">
                       Date de naissance
                     </label>
+
                     <div className="relative">
                       <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-indigo-400" />
-                      <input
-                        type="date"
-                        value={birthdate === "none" ? "" : birthdate}
-                        onChange={(e) => setBirthdate(e.target.value)}
-                        className="w-full pl-11 pr-4 py-3 bg-slate-50 border rounded-2xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition"
-                      />
+
+                      <div className="w-full pl-11 pr-4 py-3 bg-slate-50 border rounded-2xl text-slate-700">
+                        {birthdate && birthdate !== "none"
+                          ? birthdate
+                          : "Non définie"}
+                      </div>
                     </div>
                   </div>
                 </div>
