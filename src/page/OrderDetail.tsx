@@ -10,6 +10,8 @@ import {
   addDoc,
   serverTimestamp,
   updateDoc,
+  getDocs,
+  where,
 } from "firebase/firestore";
 import { db, auth } from "@/firebase";
 import {
@@ -51,6 +53,8 @@ const OrderDetail = () => {
   const [showMenu, setShowMenu] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [cancelLoading, setCancelLoading] = useState(false);
+  const [bodyScan, setBodyScan] = useState<any>(null);
+  const [loadingScan, setLoadingScan] = useState(true);
 
   const user = auth.currentUser;
 
@@ -389,6 +393,33 @@ const OrderDetail = () => {
     return null;
   };
 
+  const fetchBodyScan = async () => {
+    const user = auth.currentUser;
+
+    if (!user) return;
+
+    try {
+      const q = query(
+        collection(db, "body_scans"),
+        where("userId", "==", order.buyerId),
+      );
+
+      const snapshot = await getDocs(q);
+
+      if (!snapshot.empty) {
+        // on prend le premier scan
+        const docData = snapshot.docs[0].data();
+        setBodyScan(docData);
+      } else {
+        setBodyScan(null);
+      }
+    } catch (error) {
+      console.error("Fetch error:", error);
+    } finally {
+      setLoadingScan(false);
+    }
+  };
+
   const fetchUserData = async () => {
     const user = auth.currentUser;
 
@@ -416,7 +447,7 @@ const OrderDetail = () => {
 
   useEffect(() => {
     if (!order) return;
-
+    fetchBodyScan();
     fetchUserData();
   }, [order]);
 
@@ -630,7 +661,7 @@ const OrderDetail = () => {
         </div>
       )}
       {/* LEFT SIDE: ORDER INFORMATION & ACTIONS */}
-      <aside className="hidden md:flex w-[380px] bg-white border-r border-slate-200 flex-col shrink-0">
+      <aside className="hidden md:flex w-[380px] bg-white border-r border-slate-200 flex-col shrink-0 h-screen overflow-y-auto">
         <div className="p-6 border-b border-slate-100">
           <div className="flex items-center gap-3 mb-6">
             <button
@@ -687,6 +718,62 @@ const OrderDetail = () => {
               </span>
             </div>
           </div>
+        </div>
+
+        <div className="bg-gradient-to-br from-white to-slate-50 border border-slate-100 p-6 rounded-3xl shadow-lg mt-4 space-y-5">
+          {/* HEADER */}
+          <div className="flex items-center justify-between">
+            <h2 className="font-bold text-lg text-slate-800">
+              {Other == "buyer" ? "Your Body Profile" : "Client Body Profile" }
+            </h2>
+
+            {bodyScan && (
+              <span className="px-3 py-1 text-xs font-semibold rounded-full bg-indigo-100 text-indigo-600">
+                {bodyScan.size}
+              </span>
+            )}
+          </div>
+
+          {/* CONTENT */}
+          {loadingScan ? (
+            <div className="space-y-2">
+              <div className="h-3 w-32 bg-slate-200 rounded animate-pulse"></div>
+              <div className="h-3 w-24 bg-slate-200 rounded animate-pulse"></div>
+            </div>
+          ) : bodyScan ? (
+            <div className="grid grid-cols-2 gap-4">
+              {/* Shoulder */}
+              <div className="bg-white border border-slate-100 rounded-2xl p-4 shadow-sm">
+                <p className="text-xs text-slate-400">Shoulder</p>
+                <p className="text-lg font-bold text-slate-800">
+                  {bodyScan.metrics.shoulder.toFixed(1)} cm
+                </p>
+              </div>
+
+              {/* Arm */}
+              <div className="bg-white border border-slate-100 rounded-2xl p-4 shadow-sm">
+                <p className="text-xs text-slate-400">Arm</p>
+                <p className="text-lg font-bold text-slate-800">
+                  {bodyScan.metrics.arm.toFixed(1)} cm
+                </p>
+              </div>
+
+              {/* Height */}
+              <div className="col-span-2 bg-white border border-slate-100 rounded-2xl p-4 shadow-sm">
+                <p className="text-xs text-slate-400">Height</p>
+                <p className="text-xl font-bold text-indigo-600">
+                  {bodyScan.metrics.height.toFixed(1)} cm
+                </p>
+              </div>
+            </div>
+          ) : (
+            <div className="text-center py-6">
+              <p className="text-sm text-slate-500">No body scan found</p>
+              <p className="text-xs text-slate-400 mt-1">
+                Run a scan to generate your profile
+              </p>
+            </div>
+          )}
         </div>
 
         <div className="flex-1 p-6 space-y-4 overflow-y-auto">

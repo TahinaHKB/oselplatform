@@ -34,7 +34,7 @@ export default function WelcomNewUser() {
       firstConnection: false,
     });
 
-    navigate("/");
+    navigate("/scan");
   };
   return (
     <div className="min-h-screen bg-[#fcfcfc] text-[#1a1a1a] font-sans selection:bg-black selection:text-white">
