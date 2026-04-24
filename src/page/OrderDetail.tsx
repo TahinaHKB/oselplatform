@@ -55,6 +55,7 @@ const OrderDetail = () => {
   const [cancelLoading, setCancelLoading] = useState(false);
   const [bodyScan, setBodyScan] = useState<any>(null);
   const [loadingScan, setLoadingScan] = useState(true);
+  const [showProfileModal, setShowProfileModal] = useState(false);
 
   const user = auth.currentUser;
 
@@ -660,8 +661,75 @@ const OrderDetail = () => {
           </div>
         </div>
       )}
+      {showProfileModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
+          <div className="w-[92%] max-w-md bg-white rounded-3xl shadow-2xl border border-slate-100 p-6 space-y-5 animate-fadeIn">
+            {/* Header */}
+            <div className="flex items-center justify-between">
+              <h2 className="text-lg font-bold text-slate-800">
+                {Other == "buyer" ? "Client body Profile" : "Your Body Profile"}
+              </h2>
+
+              {bodyScan && (
+                <span className="px-3 py-1 rounded-full bg-indigo-100 text-indigo-600 text-xs font-semibold">
+                  {bodyScan.size}
+                </span>
+              )}
+            </div>
+
+            {/* Content */}
+            {loadingScan ? (
+              <div className="space-y-3">
+                <div className="h-3 w-32 bg-slate-200 rounded animate-pulse"></div>
+                <div className="h-3 w-24 bg-slate-200 rounded animate-pulse"></div>
+              </div>
+            ) : bodyScan ? (
+              <div className="grid grid-cols-2 gap-4">
+                <div className="bg-slate-50 rounded-2xl p-4 shadow-sm">
+                  <p className="text-xs text-slate-400">Shoulder</p>
+                  <p className="text-lg font-bold text-slate-800">
+                    {bodyScan.metrics.shoulder.toFixed(1)} cm
+                  </p>
+                </div>
+
+                <div className="bg-slate-50 rounded-2xl p-4 shadow-sm">
+                  <p className="text-xs text-slate-400">Arm</p>
+                  <p className="text-lg font-bold text-slate-800">
+                    {bodyScan.metrics.arm.toFixed(1)} cm
+                  </p>
+                </div>
+
+                <div className="col-span-2 bg-indigo-50 rounded-2xl p-4 shadow-sm">
+                  <p className="text-xs text-slate-400">Height</p>
+                  <p className="text-xl font-bold text-indigo-600">
+                    {bodyScan.metrics.height.toFixed(1)} cm
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <div className="text-center py-6">
+                <p className="text-sm text-slate-500">No body scan found</p>
+
+                <p className="text-xs text-slate-400 mt-1">
+                  Run a scan to generate your profile
+                </p>
+              </div>
+            )}
+
+            {/* Actions */}
+            <div className="flex gap-3 pt-2">
+              <button
+                onClick={() => setShowProfileModal(false)}
+                className="flex-1 py-3 rounded-2xl bg-slate-900 text-white font-semibold hover:bg-slate-800"
+              >
+                ok
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       {/* LEFT SIDE: ORDER INFORMATION & ACTIONS */}
-      <aside className="hidden md:flex w-[380px] bg-white border-r border-slate-200 flex-col shrink-0 h-screen overflow-y-auto">
+      <aside className="hidden md:flex w-[380px] bg-white border-r border-slate-200 flex-col shrink-0">
         <div className="p-6 border-b border-slate-100">
           <div className="flex items-center gap-3 mb-6">
             <button
@@ -718,62 +786,6 @@ const OrderDetail = () => {
               </span>
             </div>
           </div>
-        </div>
-
-        <div className="bg-gradient-to-br from-white to-slate-50 border border-slate-100 p-6 rounded-3xl shadow-lg mt-4 space-y-5">
-          {/* HEADER */}
-          <div className="flex items-center justify-between">
-            <h2 className="font-bold text-lg text-slate-800">
-              {Other == "buyer" ? "Your Body Profile" : "Client Body Profile" }
-            </h2>
-
-            {bodyScan && (
-              <span className="px-3 py-1 text-xs font-semibold rounded-full bg-indigo-100 text-indigo-600">
-                {bodyScan.size}
-              </span>
-            )}
-          </div>
-
-          {/* CONTENT */}
-          {loadingScan ? (
-            <div className="space-y-2">
-              <div className="h-3 w-32 bg-slate-200 rounded animate-pulse"></div>
-              <div className="h-3 w-24 bg-slate-200 rounded animate-pulse"></div>
-            </div>
-          ) : bodyScan ? (
-            <div className="grid grid-cols-2 gap-4">
-              {/* Shoulder */}
-              <div className="bg-white border border-slate-100 rounded-2xl p-4 shadow-sm">
-                <p className="text-xs text-slate-400">Shoulder</p>
-                <p className="text-lg font-bold text-slate-800">
-                  {bodyScan.metrics.shoulder.toFixed(1)} cm
-                </p>
-              </div>
-
-              {/* Arm */}
-              <div className="bg-white border border-slate-100 rounded-2xl p-4 shadow-sm">
-                <p className="text-xs text-slate-400">Arm</p>
-                <p className="text-lg font-bold text-slate-800">
-                  {bodyScan.metrics.arm.toFixed(1)} cm
-                </p>
-              </div>
-
-              {/* Height */}
-              <div className="col-span-2 bg-white border border-slate-100 rounded-2xl p-4 shadow-sm">
-                <p className="text-xs text-slate-400">Height</p>
-                <p className="text-xl font-bold text-indigo-600">
-                  {bodyScan.metrics.height.toFixed(1)} cm
-                </p>
-              </div>
-            </div>
-          ) : (
-            <div className="text-center py-6">
-              <p className="text-sm text-slate-500">No body scan found</p>
-              <p className="text-xs text-slate-400 mt-1">
-                Run a scan to generate your profile
-              </p>
-            </div>
-          )}
         </div>
 
         <div className="flex-1 p-6 space-y-4 overflow-y-auto">
@@ -851,22 +863,9 @@ const OrderDetail = () => {
                   )}
                   <button
                     className="w-full text-left px-4 py-3 hover:bg-slate-50 text-sm"
-                    onClick={() => {
-                      console.log("Option 2");
-                      setShowMenu(false);
-                    }}
+                    onClick={() => setShowProfileModal(true)}
                   >
-                    Contacter support
-                  </button>
-
-                  <button
-                    className="w-full text-left px-4 py-3 hover:bg-red-50 text-red-500 text-sm"
-                    onClick={() => {
-                      console.log("Option 3");
-                      setShowMenu(false);
-                    }}
-                  >
-                    Signaler
+                    Infos mesure
                   </button>
                 </div>
               )}
