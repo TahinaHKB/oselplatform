@@ -330,8 +330,12 @@ const HolisticDemo: React.FC = () => {
       {/* Top Navigation Bar */}
       <nav className="flex items-center justify-between px-8 h-16 bg-white border-b border-slate-200 z-10">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center shadow-lg shadow-indigo-500/20">
-            <Scan className="w-5 h-5 text-white" />
+          <div className="w-8 h-8 rounded-full overflow-hidden">
+            <img
+              src="/images/logo.jpg"
+              alt="Logo OSEL"
+              className="w-full h-full object-cover"
+            />
           </div>
           <span className="font-bold tracking-tight text-xl">
             OSEL<span className="text-indigo-600">Scan</span>

@@ -56,8 +56,13 @@ export default function NavBar() {
       <div className="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
         <div className="flex items-center gap-2">
           {" "}
-          {/* groupe icône + texte */}
-          {/* <img src={Icone} alt="Icône" className="h-6 w-6" /> */}
+          <div className="w-8 h-8 rounded-full overflow-hidden">
+            <img
+              src="/images/logo.jpg"
+              alt="Logo OSEL"
+              className="w-full h-full object-cover"
+            />
+          </div>
           <h1 className="text-2xl font-bold text-white">OSEL</h1>
         </div>
 

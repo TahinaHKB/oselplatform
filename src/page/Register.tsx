@@ -96,8 +96,12 @@ const Register = () => {
         {/* LEFT */}
         <div className="relative hidden lg:flex flex-col justify-end p-10 bg-gradient-to-br from-indigo-600 to-purple-700">
           <div className="flex items-center gap-3 mb-6">
-            <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
-              <ShoppingBag className="text-white w-6 h-6" />
+            <div className="w-8 h-8 rounded-full overflow-hidden">
+              <img
+                src="/images/logo.jpg"
+                alt="Logo OSEL"
+                className="w-full h-full object-cover"
+              />
             </div>
             <span className="text-2xl font-bold">OSEL</span>
           </div>
@@ -209,7 +213,10 @@ const Register = () => {
             <motion.div className="mt-6 text-center">
               <p className="text-gray-400">
                 Déjà un compte ?
-                <Link to="/login" className="ml-2 text-indigo-400 hover:underline">
+                <Link
+                  to="/login"
+                  className="ml-2 text-indigo-400 hover:underline"
+                >
                   Se connecter
                 </Link>
               </p>

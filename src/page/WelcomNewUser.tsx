@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { CheckCircle2, ShoppingBag } from "lucide-react";
+import { CheckCircle2 } from "lucide-react";
 import Welcom from "@/component/Welcom";
 import AddInformationProfile from "@/component/AddInformationProfile";
 import TailorForm from "@/component/TailorForm";
@@ -42,8 +42,12 @@ export default function WelcomNewUser() {
       {/* Navigation / Header */}
       <nav className="fixed top-0 left-0 right-0 h-16 flex items-center justify-between px-6 md:px-12 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-black rounded-full flex items-center justify-center">
-            <ShoppingBag className="w-4 h-4 text-white" />
+          <div className="w-8 h-8 rounded-full overflow-hidden">
+            <img
+              src="/images/logo.jpg"
+              alt="Logo OSEL"
+              className="w-full h-full object-cover"
+            />
           </div>
           <span className="font-bold tracking-tighter text-xl uppercase">
             OSEL
@@ -87,6 +91,14 @@ export default function WelcomNewUser() {
               </p>
 
               {/* Bloc Politique */}
+              <div className="w-full max-w-md p-4 border rounded-2xl mb-6">
+                <img
+                  src="/images/privacy-banner.jpg"
+                  alt="Protection des données OSEL"
+                  className="w-full h-auto object-contain"
+                />
+              </div>
+
               <div className="w-full max-w-md bg-gray-50 border rounded-2xl p-5 mb-8 text-left shadow-sm">
                 <label className="flex items-start gap-3 cursor-pointer">
                   <input
