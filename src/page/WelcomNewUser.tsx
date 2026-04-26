@@ -12,6 +12,7 @@ type Step = "welcome" | "profile" | "tailor" | "success";
 
 export default function WelcomNewUser() {
   const [step, setStep] = useState<Step>("welcome");
+  const [privacyAccepted, setPrivacyAccepted] = useState(false);
   const handleNext = () => {
     if (step === "welcome") setStep("profile");
     else if (step === "profile") setStep("tailor");
@@ -74,16 +75,52 @@ export default function WelcomNewUser() {
               <div className="w-20 h-20 bg-black rounded-full flex items-center justify-center mb-8">
                 <CheckCircle2 className="w-10 h-10 text-white" />
               </div>
+
               <h2 className="text-4xl font-light tracking-tight mb-4">
                 Tout est prêt !
               </h2>
-              <p className="text-gray-500 max-w-sm mb-12">
-                Bienvenue chez OSEL. Votre boutique personnalisée est prête pour
-                que vous l'exploriez.
+
+              <p className="text-gray-500 max-w-sm mb-8">
+                Bienvenue chez OSEL. Votre boutique personnalisée est prête.
+                Avant de terminer, veuillez accepter la Politique de
+                confidentialité.
               </p>
+
+              {/* Bloc Politique */}
+              <div className="w-full max-w-md bg-gray-50 border rounded-2xl p-5 mb-8 text-left shadow-sm">
+                <label className="flex items-start gap-3 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={privacyAccepted}
+                    onChange={(e) => setPrivacyAccepted(e.target.checked)}
+                    className="mt-1 h-4 w-4"
+                  />
+
+                  <span className="text-sm text-gray-700 leading-relaxed">
+                    J’accepte la Politique de confidentialité, le traitement
+                    sécurisé de mes données, ainsi que les conditions liées aux
+                    paiements, aux ventes et à l’utilisation des services OSEL.
+                  </span>
+                </label>
+
+                <a
+                  href="/documents/politique-confidentialite-osel.pdf"
+                  download
+                  className="inline-block mt-4 text-sm font-medium underline hover:opacity-70"
+                >
+                  Télécharger la politique de confidentialité (PDF)
+                </a>
+              </div>
+
               <button
                 onClick={goToHome}
-                className="px-12 py-4 bg-black text-white rounded-full font-medium transition-all hover:bg-gray-800"
+                disabled={!privacyAccepted}
+                className={`px-12 py-4 rounded-full font-medium transition-all
+        ${
+          privacyAccepted
+            ? "bg-black text-white hover:bg-gray-800"
+            : "bg-gray-300 text-gray-500 cursor-not-allowed"
+        }`}
               >
                 Terminer
               </button>
